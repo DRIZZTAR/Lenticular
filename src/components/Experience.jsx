@@ -1,52 +1,85 @@
 import {
-	OrbitControls,
 	Environment,
-	useVideoTexture,
+	OrbitControls,
 	useTexture,
+	useVideoTexture,
+	RoundedBox,
+	Float,
 } from '@react-three/drei';
-import { LenticularMaterial } from './LenticularMaterial';
 import { useControls } from 'leva';
+import { LenticularMaterial } from './LenticularMaterial';
 
 export const Experience = () => {
-	const { textureSet } = useControls({
+	const { textureSet, nbDivisions, height } = useControls({
 		textureSet: {
-			value: 'charmander-squirtle',
-			options: ['charmander-squirtle', 'white-stripes'],
+			value: 'evil-angel',
+			options: ['evil-angel', 'charmander-squirtle', 'mathematics-twerk'],
+		},
+		nbDivisions: {
+			min: 10,
+			max: 90,
+			value: 90,
+			step: 10,
+			label: 'Number of Divisions',
+		},
+		height: {
+			min: 0.001,
+			max: 0.2,
+			value: 0.05,
+			step: 0.001,
+			label: 'Height',
 		},
 	});
 
-	const videoA = useVideoTexture('textures/white-stripes/s.mp4');
-	const videoB = useVideoTexture('textures/white-stripes/ws.mp4');
+	const videoA = useVideoTexture(
+		'textures/mathematics-twerk/twerk-course.mp4'
+	);
+	const videoB = useVideoTexture(
+		'textures/mathematics-twerk/mathematics-numbers.mp4'
+	);
 
-	const textureCharmanderSquirtleA = useTexture(
+	const textureEvilAngelA = useTexture('textures/evil-angel/evil.png');
+	const textureEvilAngelB = useTexture('textures/evil-angel/angel.png');
+
+	const texturePokemonA = useTexture(
 		'textures/charmander-squirtle/charmander.png'
 	);
-	const textureCharmanderSquirtleB = useTexture(
+	const texturePokemonB = useTexture(
 		'textures/charmander-squirtle/squirtle.png'
 	);
 
 	const textureA = {
-		['charmander-squirtle']: textureCharmanderSquirtleA,
-		['white-stripes']: videoA,
+		['evil-angel']: textureEvilAngelA,
+		['charmander-squirtle']: texturePokemonA,
+		['mathematics-twerk']: videoA,
 	}[textureSet];
 
 	const textureB = {
-		['charmander-squirtle']: textureCharmanderSquirtleB,
-		['white-stripes']: videoB,
+		['evil-angel']: textureEvilAngelB,
+		['charmander-squirtle']: texturePokemonB,
+		['mathematics-twerk']: videoB,
 	}[textureSet];
 
 	return (
 		<>
 			<OrbitControls />
-			<Environment preset='sunset' />
-			<mesh>
-				<planeGeometry args={[1, 1]} />
-				<LenticularMaterial
-					key={textureSet}
-					textureA={textureA}
-					textureB={textureB}
-				/>
-			</mesh>
+			<Environment
+				preset='apartment'
+				background={false}
+				backgroundBlurriness={0.5}
+			/>
+			<Float>
+				<mesh>
+					<planeGeometry args={[1, 1.4, nbDivisions * 2, 1]} />
+					<LenticularMaterial
+						key={textureSet}
+						textureA={textureA}
+						textureB={textureB}
+						nbDivisions={nbDivisions}
+						height={height}
+					/>
+				</mesh>
+			</Float>
 		</>
 	);
 };
